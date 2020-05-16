@@ -91,7 +91,7 @@ namespace emulatorLauncher
         }
 
         public override System.Diagnostics.ProcessStartInfo Generate(string system, string emulator, string core, string rom, string playersControllers, ScreenResolution resolution)
-        {            
+        {
             string path = AppConfig.GetFullPath("openbor");
 
             string exe = Path.Combine(path, "OpenBOR.exe");
@@ -115,11 +115,11 @@ namespace emulatorLauncher
                     Arguments = "\"" + rom + "\"",
                     WorkingDirectory = path
                 };
-            }       
+            }
 
             if (build == "4432")
                 setupConfigBor4432Cfg(path);
-            else 
+            else
                 setupConfigBorCfg(path);
 
             string pakDir = Path.Combine(path, "Paks");
@@ -129,7 +129,7 @@ namespace emulatorLauncher
                 if (Path.GetFileName(file) == Path.GetFileName(rom))
                     continue;
 
-                File.Delete(file);
+                Cleanup();
             }
 
             destFile = Path.Combine(pakDir, Path.GetFileName(rom));
@@ -145,8 +145,16 @@ namespace emulatorLauncher
 
         public override void Cleanup()
         {
-            if (destFile != null && File.Exists(destFile))
-                File.Delete(destFile);
+            string path = AppConfig.GetFullPath("openbor");
+            string pakDir = Path.Combine(path, "Paks");
+
+            foreach (string file in Directory.GetFiles(pakDir))
+            {
+                var pPath = Path.Combine(pakDir, file);
+                FileInfo fi = new FileInfo(pPath);
+                File.SetAttributes(pPath, FileAttributes.Normal);
+                File.Delete(file);
+            }
         }
 
         string GetBuildToUse(string rom)
@@ -172,7 +180,7 @@ namespace emulatorLauncher
 
             return null;
         }
-        
+
         #region Ini file
         private void setupControllers(ConfigFile ini)
         {
@@ -396,9 +404,9 @@ namespace emulatorLauncher
                     conf.keys[idx].attack4 = KeyboardValue(InputKey.rightshoulder, c); // ATTACK4
                     conf.keys[idx].jump = KeyboardValue(InputKey.b, c); // JUMP
                     conf.keys[idx].special = KeyboardValue(InputKey.select, c);
-                    conf.keys[idx].start  = KeyboardValue(InputKey.start, c);
-                    conf.keys[idx].screenshot  = 69; // F12
-                    conf.keys[idx].esc  = 41; // Esc
+                    conf.keys[idx].start = KeyboardValue(InputKey.start, c);
+                    conf.keys[idx].screenshot = 69; // F12
+                    conf.keys[idx].esc = 41; // Esc
                     continue;
                 }
 
@@ -412,8 +420,8 @@ namespace emulatorLauncher
                 conf.keys[idx].attack4 = JoystickValue(InputKey.rightshoulder, c); // ATTACK4
                 conf.keys[idx].jump = JoystickValue(InputKey.b, c); // JUMP
                 conf.keys[idx].special = JoystickValue(InputKey.select, c);
-                conf.keys[idx].start  = JoystickValue(InputKey.start, c);
-                conf.keys[idx].screenshot  = 0;
+                conf.keys[idx].start = JoystickValue(InputKey.start, c);
+                conf.keys[idx].screenshot = 0;
 
                 if (Program.EnableHotKeyStart)
                     conf.keys[idx].esc = JoystickValue(InputKey.hotkey, c); // esc
@@ -421,7 +429,7 @@ namespace emulatorLauncher
                     conf.keys[idx].esc = 0;
             }
         }
-        
+
         private bool setupConfigBorCfg(string path)
         {
             savedata conf = new savedata();
@@ -507,11 +515,11 @@ namespace emulatorLauncher
                 }
             }
 
-           // setupControllersCfg(conf);
+            // setupControllersCfg(conf);
 
             conf.fullscreen = 1;
-       //     conf.vsync = 1;
-       //     conf.usegl = 1;
+            //     conf.vsync = 1;
+            //     conf.usegl = 1;
 
             try
             {
@@ -523,7 +531,7 @@ namespace emulatorLauncher
                 Marshal.Copy(ptr, arr, 0, size);
                 Marshal.FreeHGlobal(ptr);
 
-              //  File.WriteAllBytes(cfg, arr);
+                //  File.WriteAllBytes(cfg, arr);
             }
             catch
             {
@@ -567,7 +575,7 @@ namespace emulatorLauncher
 
     [StructLayoutAttribute(LayoutKind.Sequential, Pack = 4)]
     struct savedata
-    {        
+    {
         public void init()
         {
             keys = new savekey[4];
@@ -788,48 +796,48 @@ namespace emulatorLauncher
         }
 
         [MarshalAs(UnmanagedType.I4)]
-	    public int compatibleversion;
+        public int compatibleversion;
         [MarshalAs(UnmanagedType.I4)]
-	    public int gamma;
+        public int gamma;
         [MarshalAs(UnmanagedType.I4)]
-	    public int brightness;
+        public int brightness;
         [MarshalAs(UnmanagedType.I4)]
-	    public int usesound; // Use SB
+        public int usesound; // Use SB
         [MarshalAs(UnmanagedType.I4)]
-	    public int soundrate; // SB freq
+        public int soundrate; // SB freq
         [MarshalAs(UnmanagedType.I4)]
-	    public int soundvol; // SB volume
+        public int soundvol; // SB volume
         [MarshalAs(UnmanagedType.I4)]
-	    public int usemusic; // Play music
+        public int usemusic; // Play music
         [MarshalAs(UnmanagedType.I4)]
-	    public int musicvol; // Music volume
+        public int musicvol; // Music volume
         [MarshalAs(UnmanagedType.I4)]
-	    public int effectvol; // Sound fx volume
+        public int effectvol; // Sound fx volume
         [MarshalAs(UnmanagedType.I4)]
-	    public int soundbits; // SB bits
+        public int soundbits; // SB bits
         [MarshalAs(UnmanagedType.I4)]
-	    public int usejoy;
+        public int usejoy;
         [MarshalAs(UnmanagedType.I4)]
-	    public int mode; // Mode now saves
+        public int mode; // Mode now saves
         [MarshalAs(UnmanagedType.I4)]
-	    public int windowpos;
+        public int windowpos;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-	    public savekey[] keys;
+        public savekey[] keys;
 
         [MarshalAs(UnmanagedType.I4)]
-	    public int showtitles;        
+        public int showtitles;
         [MarshalAs(UnmanagedType.I4)]
-	    public int videoNTSC;
+        public int videoNTSC;
         [MarshalAs(UnmanagedType.I4)]
-        public int swfilter;        
+        public int swfilter;
         [MarshalAs(UnmanagedType.I4)]
-	    public int logo;
+        public int logo;
         [MarshalAs(UnmanagedType.I4)]
-	    public int uselog;
+        public int uselog;
         [MarshalAs(UnmanagedType.I4)]
-	    public int debuginfo; // FPS, Memory, etc...
-        
+        public int debuginfo; // FPS, Memory, etc...
+
         [MarshalAs(UnmanagedType.I4)]
         public int debug_collision_attack; // FPS, Memory, etc...
         [MarshalAs(UnmanagedType.I4)]
@@ -840,23 +848,23 @@ namespace emulatorLauncher
         public int debug_position; // FPS, Memory, etc...
         [MarshalAs(UnmanagedType.I4)]
         public int debug_features; // FPS, Memory, etc...
-        
+
         [MarshalAs(UnmanagedType.I4)]
-	    public int fullscreen; // Window or Full Screen Mode
+        public int fullscreen; // Window or Full Screen Mode
         [MarshalAs(UnmanagedType.I4)]
-	    public int stretch; // Stretch (1) or preserve aspect ratio (0) in fullscreen mode
+        public int stretch; // Stretch (1) or preserve aspect ratio (0) in fullscreen mode
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
         public int[] screen; // [7][2]; // Screen Filtering/Scaling Effects
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
-	    public int[] usegl; // 1 if OpenGL is preferred over SDL software blitting
+        public int[] usegl; // 1 if OpenGL is preferred over SDL software blitting
 
         [MarshalAs(UnmanagedType.R4)]
-	    public float glscale; // Scale factor for OpenGL
+        public float glscale; // Scale factor for OpenGL
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2, ArraySubType = UnmanagedType.I4)]
-	    int[] glfilter; // Simple or bilinear scaling
-    };    
+        int[] glfilter; // Simple or bilinear scaling
+    };
     #endregion
 }
