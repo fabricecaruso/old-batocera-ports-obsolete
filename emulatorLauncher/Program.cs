@@ -72,7 +72,8 @@ namespace emulatorLauncher
             { "teknoparrot", () => new TeknoParrotGenerator() },    
             { "easyrpg", () => new EasyRpgGenerator() },                
             { "tsugaru", () => new TsugaruGenerator() },            
-            { "solarus", () => new SolarusGenerator() }            
+            { "solarus", () => new SolarusGenerator() },
+            { "arcadeflashweb", () => new ArcadeFlashWebGenerator() }            
         };
 
         public static ConfigFile AppConfig { get; private set; }
