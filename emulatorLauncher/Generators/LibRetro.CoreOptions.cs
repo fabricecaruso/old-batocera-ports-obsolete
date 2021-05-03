@@ -35,35 +35,243 @@ namespace emulatorLauncher.libRetro
             if (core == "theodore")
                 coreSettings["theodore_autorun"] = "enabled";
 
-            ConfigureMame2003(coreSettings, system, core);
-            ConfigureAtari800(coreSettings, system, core);
-            ConfigureVirtualJaguar(coreSettings, system, core);
-            ConfigureSNes9x(coreSettings, system, core);
-            ConfigureMupen64(coreSettings, system, core);
-            ConfigurePuae(coreSettings, system, core);
+            ConfigureMame2003(retroarchConfig, coreSettings, system, core);
+            ConfigureAtari800(retroarchConfig, coreSettings, system, core);
+            ConfigureVirtualJaguar(retroarchConfig, coreSettings, system, core);
+            ConfigureSNes9x(retroarchConfig, coreSettings, system, core);
+            ConfigureMupen64(retroarchConfig, coreSettings, system, core);
+            ConfigurePuae(retroarchConfig, coreSettings, system, core);
             ConfigureFlycast(retroarchConfig, coreSettings, system, core);
-            ConfigureMame(coreSettings, system, core);
+            ConfigureMame(retroarchConfig, coreSettings, system, core);
             ConfigureMesen(retroarchConfig, coreSettings, system, core);
             ConfigureMednafenPsxHW(retroarchConfig, coreSettings, system, core);
-            ConfigureCap32(coreSettings, system, core);
-            ConfigureQuasi88(coreSettings, system, core);
-            ConfigureGenesisPlusGX(coreSettings, system, core);
+            ConfigureCap32(retroarchConfig, coreSettings, system, core);
+            ConfigureQuasi88(retroarchConfig, coreSettings, system, core);
+            ConfigureGenesisPlusGX(retroarchConfig, coreSettings, system, core);
             ConfigureGenesisPlusGXWide(retroarchConfig, coreSettings, system, core);
-            ConfigurePotator(coreSettings, system, core);
-			ConfigureDosboxPure(coreSettings, system, core);
-			ConfigureKronos(coreSettings, system, core);
-			ConfigurePicodrive(coreSettings, system, core);
-			ConfigureMednafenSaturn(coreSettings, system, core);
+            ConfigurePotator(retroarchConfig, coreSettings, system, core);
+			ConfigureDosboxPure(retroarchConfig, coreSettings, system, core);
+			ConfigureKronos(retroarchConfig, coreSettings, system, core);
+			ConfigurePicodrive(retroarchConfig, coreSettings, system, core);
+			ConfigureMednafenSaturn(retroarchConfig, coreSettings, system, core);
+			ConfigureCitra(retroarchConfig, coreSettings, system, core);
+			ConfigureFbneo(retroarchConfig, coreSettings, system, core);
+			ConfigureGambatte(retroarchConfig, coreSettings, system, core);
 
             if (coreSettings.IsDirty)
                 coreSettings.Save(Path.Combine(RetroarchPath, "retroarch-core-options.cfg"), true);
         }
 		
-		private void ConfigureMednafenSaturn(ConfigFile coreSettings, string system, string core)
+		private void ConfigureGambatte(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
+        {
+            if (core != "gambatte")
+                return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["gambatte_gb_bootloader"] = "enabled";
+			coreSettings["gambatte_gbc_color_correction_mode"] = "accurate";
+			coreSettings["gambatte_gbc_color_correction"] = "GBC only";
+			coreSettings["gambatte_up_down_allowed"] = "disabled";
+
+            if (SystemConfig.isOptSet("gambatte_gb_hwmode"))
+                coreSettings["gambatte_gb_hwmode"] = SystemConfig["gambatte_gb_hwmode"];
+            else
+                coreSettings["gambatte_gb_hwmode"] = "Auto";
+
+            if (SystemConfig.isOptSet("gambatte_mix_frames"))
+                coreSettings["gambatte_mix_frames"] = SystemConfig["gambatte_mix_frames"];
+            else
+                coreSettings["gambatte_mix_frames"] = "lcd_ghosting";
+				
+			if (SystemConfig.isOptSet("gambatte_gb_internal_palette"))
+                coreSettings["gambatte_gb_internal_palette"] = SystemConfig["gambatte_gb_internal_palette"];
+            else
+                coreSettings["gambatte_gb_internal_palette"] = "GB - DMG";
+				
+			if (SystemConfig.isOptSet("gambatte_gb_colorization"))
+                coreSettings["gambatte_gb_colorization"] = SystemConfig["gambatte_gb_colorization"];
+            else
+                coreSettings["gambatte_gb_colorization"] = "auto";
+
+        }
+		
+		private void ConfigureFbneo(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
+        {
+            if (core != "fbneo")
+                return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+			else
+			    SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["fbneo-allow-depth-32"] = "enabled";
+			coreSettings["fbneo-allow-patched-romsets"] = "enabled";
+			coreSettings["fbneo-memcard-mode"] = "per-game";
+			coreSettings["fbneo-hiscores"] = "enabled";
+			coreSettings["fbneo-load-subsystem-from-parent"] = "enabled";
+			coreSettings["fbneo-fm-interpolation"] = "4-point 3rd order";
+			coreSettings["fbneo-sample-interpolation"] = "4-point 3rd order";
+			
+            
+            if (SystemConfig.isOptSet("fbneo-neogeo-mode"))
+                coreSettings["fbneo-neogeo-mode"] = SystemConfig["fbneo-neogeo-mode"];
+            else
+                coreSettings["fbneo-neogeo-mode"] = "UNIBIOS";
+				
+			if (SystemConfig.isOptSet("fbneo-vertical-mode"))
+            {
+                coreSettings["fbneo-vertical-mode"] = SystemConfig["fbneo-vertical-mode"];
+                if (SystemConfig["fbneo-vertical-mode"] == "enabled")
+                    SystemConfig["bezel"] = "none";
+            }
+            else
+                coreSettings["fbneo-vertical-mode"] = "disabled";
+				
+			if (SystemConfig.isOptSet("fbneo-lightgun-hide-crosshair"))
+                coreSettings["fbneo-lightgun-hide-crosshair"] = SystemConfig["fbneo-lightgun-hide-crosshair"];
+            else
+                coreSettings["fbneo-lightgun-hide-crosshair"] = "disabled";
+
+        }
+		
+		private void ConfigureCitra(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
+        {
+            if (core != "citra")
+                return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["citra_use_libretro_save_path"] = "LibRetro Default";
+			coreSettings["citra_is_new_3ds"] = "New 3DS";
+            
+/*            if (SystemConfig.isOptSet("citra_layout_option"))
+                coreSettings["citra_layout_option"] = SystemConfig["citra_layout_option"];
+            else
+                coreSettings["citra_layout_option"] = "Default Top-Bottom Screen";
+*/
+            if (SystemConfig.isOptSet("citra_layout_option"))
+            {
+                coreSettings["citra_layout_option"] = SystemConfig["citra_layout_option"];
+                if ((SystemConfig["citra_layout_option"] == "Large Screen, Small Screen") && !SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+                {
+                    retroarchConfig["aspect_ratio_index"] = "1";
+                    SystemConfig["bezel"] = "none";
+                }
+                else if ((SystemConfig["citra_layout_option"] == "Single Screen Only") && !SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+                {
+                    retroarchConfig["aspect_ratio_index"] = "2";
+                    SystemConfig["bezel"] = "none";
+                }
+                else
+                    SystemConfig["bezel"] = SystemConfig["bezel"];
+            }    
+            else
+            {
+                coreSettings["citra_layout_option"] = "Default Top-Bottom Screen";
+            }
+			
+			if (SystemConfig.isOptSet("citra_layout_option"))
+            {
+                coreSettings["citra_layout_option"] = SystemConfig["citra_layout_option"];
+                if ((SystemConfig["citra_layout_option"] == "Large Screen, Small Screen") && !SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+                {
+                    retroarchConfig["aspect_ratio_index"] = "1";
+                    SystemConfig["bezel"] = "none";
+                }
+                else if ((SystemConfig["citra_layout_option"] == "Single Screen Only") && !SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+                {
+                    retroarchConfig["aspect_ratio_index"] = "2";
+                    SystemConfig["bezel"] = "none";
+                }
+                else
+                    SystemConfig["bezel"] = SystemConfig["bezel"];
+            }    
+            else
+            {
+                coreSettings["citra_layout_option"] = "Default Top-Bottom Screen";
+            }
+
+            if (SystemConfig.isOptSet("citra_mouse_show_pointer"))
+                coreSettings["citra_mouse_show_pointer"] = SystemConfig["citra_mouse_show_pointer"];
+            else
+                coreSettings["citra_mouse_show_pointer"] = "enabled";
+
+            if (SystemConfig.isOptSet("citra_region_value"))
+                coreSettings["citra_region_value"] = SystemConfig["citra_region_value"];
+            else
+                coreSettings["citra_region_value"] = "Auto";
+				
+			if (SystemConfig.isOptSet("citra_resolution_factor"))
+                coreSettings["citra_resolution_factor"] = SystemConfig["citra_resolution_factor"];
+            else
+                coreSettings["citra_resolution_factor"] = "1x (Native)";
+				
+			if (SystemConfig.isOptSet("citra_swap_screen"))
+                coreSettings["citra_swap_screen"] = SystemConfig["citra_swap_screen"];
+            else
+                coreSettings["citra_swap_screen"] = "Top";
+				
+			if (SystemConfig.isOptSet("citra_mouse_touchscreen"))
+                coreSettings["citra_mouse_touchscreen"] = SystemConfig["citra_mouse_touchscreen"];
+            else
+                coreSettings["citra_mouse_touchscreen"] = "enabled";
+
+        }
+		
+		private void ConfigureMednafenSaturn(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "mednafen_saturn")
                 return;
-			
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             coreSettings["beetle_saturn_autortc"] = "enabled";			
 			coreSettings["beetle_saturn_shared_ext"] = "enabled";
 			coreSettings["beetle_saturn_shared_int"] = "enabled";
@@ -108,15 +316,28 @@ namespace emulatorLauncher.libRetro
             else
                 coreSettings["beetle_saturn_midsync"] = "disabled";
 				
-
         }
 
-        private void ConfigurePicodrive(ConfigFile coreSettings, string system, string core)
+        private void ConfigurePicodrive(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "picodrive")
                 return;
-				
-			coreSettings["picodrive_ramcart"] = "disabled";
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["picodrive_ramcart"] = "disabled";
             
             if (SystemConfig.isOptSet("overclk68k"))
                 coreSettings["picodrive_overclk68k"] = SystemConfig["overclk68k"];
@@ -160,12 +381,26 @@ namespace emulatorLauncher.libRetro
 
         }
 		
-		private void ConfigureKronos(ConfigFile coreSettings, string system, string core)
+		private void ConfigureKronos(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "kronos")
                 return;
-			
-			coreSettings["kronos_use_beetle_saves"] = "enabled";
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["kronos_use_beetle_saves"] = "enabled";
 			coreSettings["kronos_multitap_port2"] = "disabled";
 			coreSettings["kronos_sh2coretype"] = "kronos";
             
@@ -221,10 +456,24 @@ namespace emulatorLauncher.libRetro
 
         }
 
-        private void ConfigureMame2003(ConfigFile coreSettings, string system, string core)
+        private void ConfigureMame2003(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "mame078plus" && core != "mame2003_plus")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             coreSettings["mame2003-plus_skip_disclaimer"] = "enabled";
             coreSettings["mame2003-plus_skip_warnings"] = "enabled";
@@ -260,11 +509,25 @@ namespace emulatorLauncher.libRetro
 
         }
 
-        private void ConfigureQuasi88(ConfigFile coreSettings, string system, string core)
+        private void ConfigureQuasi88(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "quasi88")
                 return;
-            
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             if (SystemConfig.isOptSet("q88_basic_mode"))
                 coreSettings["q88_basic_mode"] = SystemConfig["q88_basic_mode"];
             else
@@ -282,10 +545,24 @@ namespace emulatorLauncher.libRetro
 
         }
 
-        private void ConfigureCap32(ConfigFile coreSettings, string system, string core)
+        private void ConfigureCap32(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "cap32")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             // Virtual Keyboard by default (select+start) change to (start+Y)
             coreSettings["cap32_combokey"] = "y";
@@ -305,10 +582,24 @@ namespace emulatorLauncher.libRetro
                 coreSettings["cap32_ram"] = "128";
         }
 
-        private void ConfigureAtari800(ConfigFile coreSettings, string system, string core)
+        private void ConfigureAtari800(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "atari800")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             if (system == "atari800")
             {               
@@ -384,18 +675,46 @@ namespace emulatorLauncher.libRetro
             atariCfg.Save(Path.Combine(RetroarchPath, ".atari800.cfg"), false);
         }
 
-        private void ConfigureVirtualJaguar(ConfigFile coreSettings, string system, string core)
+        private void ConfigureVirtualJaguar(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "virtualjaguar")
                 return;
 
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             coreSettings["virtualjaguar_usefastblitter"] = "enabled";
         }
 		
-		private void ConfigureSNes9x(ConfigFile coreSettings, string system, string core)
+		private void ConfigureSNes9x(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "snes9x")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             if (SystemConfig.isOptSet("ntsc_filter"))
                 coreSettings["snes9x_blargg"] = SystemConfig["ntsc_filter"];
@@ -413,11 +732,25 @@ namespace emulatorLauncher.libRetro
                 coreSettings["snes9x_gfx_hires"] = "enabled";
         }
 		
-        private void ConfigureGenesisPlusGX(ConfigFile coreSettings, string system, string core)
+        private void ConfigureGenesisPlusGX(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "genesis_plus_gx")
                 return;
-					
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             coreSettings["genesis_plus_gx_bram"] = "per game";
             coreSettings["genesis_plus_gx_ym2413"] = "auto";
 
@@ -477,14 +810,15 @@ namespace emulatorLauncher.libRetro
         {
             if (core != "genesis_plus_gx_wide")
                 return;
-			
-            if (SystemConfig.isOptSet("ratio"))
-             {
+
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
                 int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
-                if (idx > 0)
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
                 {
                     retroarchConfig["aspect_ratio_index"] = idx.ToString();
                     retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
                 }
             }
             else
@@ -540,12 +874,26 @@ namespace emulatorLauncher.libRetro
 				
         }
 		
-		private void ConfigureMame(ConfigFile coreSettings, string system, string core)
+		private void ConfigureMame(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "mame")
                 return;
-				
-			coreSettings["mame_mame_paths_enable"] = "enabled";
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["mame_mame_paths_enable"] = "enabled";
             coreSettings["mame_mame_mouse_enable"] = "enabled";
             coreSettings["mame_mame_read_config"] = "enabled";
             coreSettings["mame_mame_softlists_auto_media"] = "enabled";
@@ -593,10 +941,24 @@ namespace emulatorLauncher.libRetro
 
         }
 		
-		private void ConfigurePotator(ConfigFile coreSettings, string system, string core)
+		private void ConfigurePotator(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "potator")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             if (SystemConfig.isOptSet("lcd_ghosting"))
                 coreSettings["potator_lcd_ghosting"] = SystemConfig["lcd_ghosting"];
@@ -610,34 +972,188 @@ namespace emulatorLauncher.libRetro
 
         }
 
-        private void ConfigureMupen64(ConfigFile coreSettings, string system, string core)
+        private void ConfigureMupen64(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "mupen64plus_next" && core != "mupen64plus_next_gles3")
                 return;
 
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+				
+			coreSettings["mupen64plus-cpucore"] = "pure_interpreter";
+			coreSettings["mupen64plus-rdp-plugin"] = "gliden64";
+			coreSettings["mupen64plus-rsp-plugin"] = "hle";			
+			coreSettings["mupen64plus-EnableLODEmulation"] = "True";
+			coreSettings["mupen64plus-EnableCopyAuxToRDRAM"] = "True";						
+			coreSettings["mupen64plus-EnableHWLighting"] = "True";
+			coreSettings["mupen64plus-txHiresFullAlphaChannel"] = "True";
+			coreSettings["mupen64plus-GLideN64IniBehaviour"] = "early";
+			
+			// Performance presets
+			if (SystemConfig.isOptSet("PerformanceMode") && SystemConfig.getOptBoolean("PerformanceMode"))
+			{
+				coreSettings["mupen64plus-EnableCopyColorToRDRAM"] = "Off";
+				coreSettings["mupen64plus-EnableCopyDepthToRDRAM"] = "Off";
+				coreSettings["mupen64plus-EnableFBEmulation"] = "False";
+				coreSettings["mupen64plus-ThreadedRenderer"] = "False";
+				coreSettings["mupen64plus-HybridFilter"] = "False";
+				coreSettings["mupen64plus-BackgroundMode"] = "OnePiece";
+				coreSettings["mupen64plus-EnableLegacyBlending"] = "True";
+				coreSettings["mupen64plus-txFilterIgnoreBG"] = "True";
+			}
+			else
+			{
+				coreSettings["mupen64plus-EnableCopyColorToRDRAM"] = "TripleBuffer";
+				coreSettings["mupen64plus-EnableCopyDepthToRDRAM"] = "Software";
+				coreSettings["mupen64plus-EnableFBEmulation"] = "True";
+				coreSettings["mupen64plus-ThreadedRenderer"] = "True";
+				coreSettings["mupen64plus-HybridFilter"] = "True";
+				coreSettings["mupen64plus-BackgroundMode"] = "Stripped";
+				coreSettings["mupen64plus-EnableLegacyBlending"] = "False";
+				coreSettings["mupen64plus-txFilterIgnoreBG"] = "False";
+
+			}
+			
+			// Hi Res textures methods
+			if (SystemConfig.isOptSet("TexturesPack"))
+			{
+				if (SystemConfig["TexturesPack"] == "legacy")
+				{
+					coreSettings["mupen64plus-EnableTextureCache"] = "True";
+					coreSettings["mupen64plus-txHiresEnable"] = "True";
+					coreSettings["mupen64plus-txCacheCompression"] = "True";
+					coreSettings["mupen64plus-txHiresFullAlphaChannel"] = "False";
+					coreSettings["mupen64plus-EnableEnhancedTextureStorage"] = "False";
+					coreSettings["mupen64plus-EnableEnhancedHighResStorage"] = "False";
+				}
+				else if (SystemConfig["TexturesPack"] == "cache")
+				{
+					coreSettings["mupen64plus-EnableTextureCache"] = "True";
+					coreSettings["mupen64plus-txHiresEnable"] = "True";
+					coreSettings["mupen64plus-txCacheCompression"] = "True";
+					coreSettings["mupen64plus-txHiresFullAlphaChannel"] = "True";
+					coreSettings["mupen64plus-EnableEnhancedTextureStorage"] = "True";
+					coreSettings["mupen64plus-EnableEnhancedHighResStorage"] = "True";
+				}							
+			}	
+			else
+			{
+				coreSettings["mupen64plus-EnableTextureCache"] = "False";
+				coreSettings["mupen64plus-txHiresEnable"] = "False";
+				coreSettings["mupen64plus-txCacheCompression"] = "False";
+				coreSettings["mupen64plus-txHiresFullAlphaChannel"] = "False";
+				coreSettings["mupen64plus-EnableEnhancedTextureStorage"] = "False";
+				coreSettings["mupen64plus-EnableEnhancedHighResStorage"] = "False";
+			}
+			
+			// Texture Enhancement
+            if (SystemConfig.isOptSet("Texture_Enhancement"))
+                coreSettings["mupen64plus-txEnhancementMode"] = SystemConfig["Texture_Enhancement"];
+			else
+			    coreSettings["mupen64plus-txEnhancementMode"] = "As Is";
+			
+			// Widescreen
+			if (SystemConfig.isOptSet("Widescreen") && SystemConfig.getOptBoolean("Widescreen"))
+			{
+				coreSettings["mupen64plus-aspect"] = "16:9 adjusted";
+				retroarchConfig["aspect_ratio_index"] = "1";
+                SystemConfig["bezel"] = "none";
+			}
+			else
+				coreSettings["mupen64plus-aspect"] = "4:3";
+				
+			// 4:3 resolution
+            if (SystemConfig.isOptSet("43screensize"))
+                coreSettings["mupen64plus-43screensize"] = SystemConfig["43screensize"];
+			else
+			    coreSettings["mupen64plus-43screensize"] = "960x720";
+				
+			// 16:9 resolution
+            if (SystemConfig.isOptSet("169screensize"))
+                coreSettings["mupen64plus-169screensize"] = SystemConfig["169screensize"];
+			else
+			    coreSettings["mupen64plus-169screensize"] = "1280x720";
+			
+			// BilinearMode
+            if (SystemConfig.isOptSet("BilinearMode"))
+                coreSettings["mupen64plus-BilinearMode"] = SystemConfig["BilinearMode"];
+			else
+			    coreSettings["mupen64plus-BilinearMode"] = "3point";
+				
             // BilinearMode
             if (SystemConfig.isOptSet("BilinearMode"))
                 coreSettings["mupen64plus-BilinearMode"] = SystemConfig["BilinearMode"];
+			else
+			    coreSettings["mupen64plus-BilinearMode"] = "3point";
 
             // Multisampling aa
             if (SystemConfig.isOptSet("MultiSampling"))
                 coreSettings["mupen64plus-MultiSampling"] = SystemConfig["MultiSampling"];
+			else
+			    coreSettings["mupen64plus-MultiSampling"] = "0";
 
             // Texture filter
             if (SystemConfig.isOptSet("Texture_filter"))
                 coreSettings["mupen64plus-txFilterMode"] = SystemConfig["Texture_filter"];
-
-            // Texture Enhancement
-            if (SystemConfig.isOptSet("Texture_Enhancement"))
-                coreSettings["mupen64plus-txEnhancementMode"] = SystemConfig["Texture_Enhancement"];
+			else
+			    coreSettings["mupen64plus-txFilterMode"] = "None";
+				
+			// Player 1 pack
+            if (SystemConfig.isOptSet("mupen64plus-pak1"))
+                coreSettings["mupen64plus-pak1"] = SystemConfig["mupen64plus-pak1"];
+			else
+			    coreSettings["mupen64plus-pak1"] = "memory";
+				
+			// Player 2 pack
+            if (SystemConfig.isOptSet("mupen64plus-pak2"))
+                coreSettings["mupen64plus-pak2"] = SystemConfig["mupen64plus-pak2"];
+			else
+			    coreSettings["mupen64plus-pak2"] = "none";
+				
+			// Player 3 pack
+            if (SystemConfig.isOptSet("mupen64plus-pak3"))
+                coreSettings["mupen64plus-pak3"] = SystemConfig["mupen64plus-pak3"];
+			else
+			    coreSettings["mupen64plus-pak3"] = "none";
+				
+			// Player 4 pack
+            if (SystemConfig.isOptSet("mupen64plus-pak4"))
+                coreSettings["mupen64plus-pak4"] = SystemConfig["mupen64plus-pak4"];
+			else
+			    coreSettings["mupen64plus-pak4"] = "none";
         }
 		
-		private void ConfigureDosboxPure(ConfigFile coreSettings, string system, string core)
+		private void ConfigureDosboxPure(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "dosbox_pure")
                 return;
-				
-			coreSettings["dosbox_pure_advanced"] = "true";
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["dosbox_pure_advanced"] = "true";
 			coreSettings["dosbox_pure_auto_mapping"] = "true";
 			coreSettings["dosbox_pure_bind_unused"] = "true";
 			coreSettings["dosbox_pure_savestate"] = "on";
@@ -726,15 +1242,40 @@ namespace emulatorLauncher.libRetro
                 coreSettings["dosbox_pure_svga"] = SystemConfig["svga"];
 			else
 			    coreSettings["dosbox_pure_svga"] = "vesa_nolfb";
+				
+			if (SystemConfig.isOptSet("keyboard_layout"))
+                coreSettings["dosbox_pure_keyboard_layout"] = SystemConfig["keyboard_layout"];
+			else
+			    coreSettings["dosbox_pure_keyboard_layout"] = "us";
             
         }
 
-        private void ConfigurePuae(ConfigFile coreSettings, string system, string core)
+        private void ConfigurePuae(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
         {
             if (core != "puae")
                 return;
 
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             coreSettings["puae_video_options_display"] = SystemConfig["enabled"];
+
+            // cpu compatibility
+            if (SystemConfig.isOptSet("cpu_compatibility"))
+                coreSettings["puae_cpu_compatibility"] = SystemConfig["cpu_compatibility"];
+            else
+                coreSettings["puae_cpu_compatibility"] = "normal";
 
             // video resolution
             if (SystemConfig.isOptSet("video_resolution"))
@@ -752,7 +1293,7 @@ namespace emulatorLauncher.libRetro
             if (SystemConfig.isOptSet("video_standard"))
                 coreSettings["puae_video_standard"] = SystemConfig["video_standard"];
             else
-                coreSettings["puae_video_standard"] = SystemConfig["PAL"];
+                coreSettings["puae_video_standard"] = "PAL auto";
 
             // whdload
             if (SystemConfig.isOptSet("whdload"))
@@ -771,6 +1312,20 @@ namespace emulatorLauncher.libRetro
         {
             if (core != "flycast")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             coreSettings["reicast_threaded_rendering"] = "enabled";
 
@@ -839,6 +1394,20 @@ namespace emulatorLauncher.libRetro
             if (core != "mesen")
                 return;
 
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             coreSettings["mesen_aspect_ratio"] = "Auto";
 
             if (SystemConfig.isOptSet("hd_packs"))
@@ -873,6 +1442,20 @@ namespace emulatorLauncher.libRetro
             if (core != "pcsx_rearmed")
                 return;
 
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
             // video resolution
             if (SystemConfig.isOptSet("neon_enhancement") && SystemConfig["neon_enhancement"] != "disabled")
             {
@@ -893,6 +1476,20 @@ namespace emulatorLauncher.libRetro
         {
             if (core != "mednafen_psx_hw")
                 return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
 
             // coreSettings["beetle_psx_hw_skip_bios"] = "enabled";
 
