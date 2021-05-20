@@ -48,7 +48,7 @@ namespace emulatorLauncher
             SetupLilyPad();
             SetupGSDx(resolution);
 
-            if (SystemConfig["ratio"] == "4:3")
+            if (SystemConfig["ratio"] == "4:3" || SystemConfig["ratio"] == "")
                 _bezelFileInfo = BezelFiles.GetBezelFiles(system, rom, resolution);
 
             _resolution = resolution;
@@ -92,23 +92,32 @@ namespace emulatorLauncher
                         string savesPath = AppConfig.GetFullPath("saves");
                         if (!string.IsNullOrEmpty(savesPath))
                         {
-                            savesPath = Path.Combine(savesPath, "pcsx2");
+                            savesPath = Path.Combine(savesPath, "ps2", "pcsx2");
                             if (!Directory.Exists(savesPath))
                                 try { Directory.CreateDirectory(savesPath); }
                                 catch { }
-
+								
+                            ini.WriteValue("Folders", "UseDefaultSavestates", "disabled");
+							ini.WriteValue("Folders", "UseDefaultMemoryCards", "disabled");
                             ini.WriteValue("Folders", "Savestates", savesPath.Replace("\\", "\\\\")); // Path.Combine(relPath, "pcsx2")
+							ini.WriteValue("Folders", "MemoryCards", savesPath.Replace("\\", "\\\\"));
                         }
 
                         if (SystemConfig.isOptSet("ratio") && !string.IsNullOrEmpty(SystemConfig["ratio"]))
                             ini.WriteValue("GSWindow", "AspectRatio", SystemConfig["ratio"]);
                         else
-                            ini.WriteValue("GSWindow", "AspectRatio", "Stretch");
+                            ini.WriteValue("GSWindow", "AspectRatio", "4:3");
+						
+						if (SystemConfig.isOptSet("fmv_ratio") && !string.IsNullOrEmpty(SystemConfig["fmv_ratio"]))
+                            ini.WriteValue("GSWindow", "FMVAspectRatioSwitch", SystemConfig["fmv_ratio"]);
+                        else
+                            ini.WriteValue("GSWindow", "FMVAspectRatioSwitch", "Off");
 
                         ini.WriteValue("ProgramLog", "Visible", "disabled");
                         ini.WriteValue("GSWindow", "IsFullscreen", "enabled");
 
                         ini.WriteValue("Filenames", "PAD", "LilyPad.dll");
+						ini.WriteValue("Filenames", "GS", "GSdx32-AVX2.dll");
                     }
                 }
                 catch { }
@@ -141,6 +150,11 @@ namespace emulatorLauncher
                     using (var ini = new IniFile(iniFile))
                     {
                         string negdivhack = SystemConfig["negdivhack"] == "1" ? "enabled" : "disabled";
+						
+						if (!string.IsNullOrEmpty(SystemConfig["VSync"]))
+                            ini.WriteValue("EmuCore/GS", "VsyncEnable", SystemConfig["VSync"]);
+                        else
+                            ini.WriteValue("EmuCore/GS", "VsyncEnable", "0");
 
                         ini.WriteValue("EmuCore/Speedhacks", "vuThread", negdivhack);
 
@@ -171,7 +185,7 @@ namespace emulatorLauncher
                         if (!string.IsNullOrEmpty(SystemConfig["internalresolution"]))
                             ini.WriteValue("Settings", "upscale_multiplier", SystemConfig["internalresolution"]);
                         else
-                            ini.WriteValue("Settings", "upscale_multiplier", "0");
+                            ini.WriteValue("Settings", "upscale_multiplier", "1");
 
                         if (string.IsNullOrEmpty(SystemConfig["internalresolution"]) || SystemConfig["internalresolution"] == "0")
                         {
@@ -186,6 +200,33 @@ namespace emulatorLauncher
                                 ini.WriteValue("Settings", "resy", (Screen.PrimaryScreen.Bounds.Height * 2).ToString());
                             }
                         }
+						
+                        ini.WriteValue("Settings", "shaderfx", "1");
+						
+						if (SystemConfig.isOptSet("TVShader") && !string.IsNullOrEmpty(SystemConfig["TVShader"]))
+                            ini.WriteValue("Settings", "TVShader", SystemConfig["TVShader"]);
+                        else
+                            ini.WriteValue("Settings", "TVShader", "0");
+						
+						if (SystemConfig.isOptSet("Offset") && !string.IsNullOrEmpty(SystemConfig["Offset"]))
+                            ini.WriteValue("Settings", "UserHacks_WildHack", SystemConfig["Offset"]);
+                        else
+                            ini.WriteValue("Settings", "UserHacks_WildHack", "0");
+						
+						if (SystemConfig.isOptSet("bilinear_filtering") && !string.IsNullOrEmpty(SystemConfig["bilinear_filtering"]))
+                            ini.WriteValue("Settings", "linear_present", SystemConfig["bilinear_filtering"]);
+                        else
+                            ini.WriteValue("Settings", "linear_present", "0");
+						
+						if (SystemConfig.isOptSet("fxaa") && !string.IsNullOrEmpty(SystemConfig["fxaa"]))
+                            ini.WriteValue("Settings", "fxaa", SystemConfig["fxaa"]);
+                        else
+                            ini.WriteValue("Settings", "fxaa", "0");
+						
+						if (SystemConfig.isOptSet("renderer") && !string.IsNullOrEmpty(SystemConfig["renderer"]))
+                            ini.WriteValue("Settings", "Renderer", SystemConfig["renderer"]);
+                        else
+                            ini.WriteValue("Settings", "Renderer", "12");
 
                         if (SystemConfig.isOptSet("interlace") && !string.IsNullOrEmpty(SystemConfig["interlace"]))
                             ini.WriteValue("Settings", "interlace", SystemConfig["interlace"]);
@@ -223,7 +264,6 @@ namespace emulatorLauncher
                 catch { }
             }
         }
-
 
         /*
         private string romName;
