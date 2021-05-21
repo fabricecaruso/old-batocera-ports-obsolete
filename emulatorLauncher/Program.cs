@@ -72,6 +72,7 @@ namespace emulatorLauncher
             { "teknoparrot", () => new TeknoParrotGenerator() },    
             { "easyrpg", () => new EasyRpgGenerator() },                
             { "tsugaru", () => new TsugaruGenerator() },            
+            { "xemu", () => new XEmuGenerator() },                        
             { "solarus", () => new SolarusGenerator() }            
         };
 
