@@ -74,6 +74,8 @@ namespace emulatorLauncher
             { "tsugaru", () => new TsugaruGenerator() },            
             { "solarus", () => new SolarusGenerator() },
             { "arcadeflashweb", () => new ArcadeFlashWebGenerator() }            
+            { "xemu", () => new XEmuGenerator() },                        
+            { "solarus", () => new SolarusGenerator() }            
         };
 
         public static ConfigFile AppConfig { get; private set; }
