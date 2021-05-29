@@ -1001,6 +1001,22 @@ namespace emulatorLauncher.libRetro
 			coreSettings["mupen64plus-GLideN64IniBehaviour"] = "early";
 			
 			// Performance presets
+			if (SystemConfig.isOptSet("CropOverscan") && SystemConfig.getOptBoolean("CropOverscan"))
+			{
+				coreSettings["mupen64plus-OverscanBottom"] = "0";
+				coreSettings["mupen64plus-OverscanLeft"] = "0";
+				coreSettings["mupen64plus-OverscanRight"] = "0";
+				coreSettings["mupen64plus-OverscanTop"] = "0";
+			}
+			else
+			{
+				coreSettings["mupen64plus-OverscanBottom"] = "15";
+				coreSettings["mupen64plus-OverscanLeft"] = "18";
+				coreSettings["mupen64plus-OverscanRight"] = "13";
+				coreSettings["mupen64plus-OverscanTop"] = "12";
+			}
+			
+			// Performance presets
 			if (SystemConfig.isOptSet("PerformanceMode") && SystemConfig.getOptBoolean("PerformanceMode"))
 			{
 				coreSettings["mupen64plus-EnableCopyColorToRDRAM"] = "Off";
