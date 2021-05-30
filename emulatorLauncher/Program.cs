@@ -71,10 +71,10 @@ namespace emulatorLauncher
             { "ryujinx", () => new RyujinxGenerator() },
             { "teknoparrot", () => new TeknoParrotGenerator() },    
             { "easyrpg", () => new EasyRpgGenerator() },                
-            { "tsugaru", () => new TsugaruGenerator() },            
-            { "solarus", () => new SolarusGenerator() },
-            { "arcadeflashweb", () => new ArcadeFlashWebGenerator() },            
-            { "xemu", () => new XEmuGenerator() },                        
+            { "tsugaru", () => new TsugaruGenerator() },
+			{ "love", () => new LoveGenerator() },
+//			{ "xemu", () => new XEmuGenerator() },
+            { "arcadeflashweb", () => new ArcadeFlashWebGenerator() },			
             { "solarus", () => new SolarusGenerator() }            
         };
 

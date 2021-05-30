@@ -81,16 +81,6 @@ namespace emulatorLauncher.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] eeprom {
-            get {
-                object obj = ResourceManager.GetObject("eeprom", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to #
         ///# CORE CONFIGURATION OPTIONS
         ///#
@@ -167,16 +157,6 @@ namespace emulatorLauncher.Properties {
         internal static byte[] ReShadeUI {
             get {
                 object obj = ResourceManager.GetObject("ReShadeUI", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] xbox_hdd_qcow2 {
-            get {
-                object obj = ResourceManager.GetObject("xbox_hdd_qcow2", resourceCulture);
                 return ((byte[])(obj));
             }
         }
