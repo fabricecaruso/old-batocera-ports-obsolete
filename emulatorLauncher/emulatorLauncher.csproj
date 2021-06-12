@@ -68,7 +68,7 @@
       <SubType>Form</SubType>
     </Compile>
 	<Compile Include="Generators\Love.Generator.cs" />
-	<!--<Compile Include="Generators\XEmu.Generator.cs" />-->
+	<Compile Include="Generators\XEmu.Generator.cs" />
     <Compile Include="Generators\AppleWin.Generator.cs" />
     <Compile Include="Generators\AmigaForever.Generator.cs" />
 	<Compile Include="Generators\ArcadeFlashWeb.Generator.cs" />
@@ -180,9 +180,11 @@
     </Compile>
     <None Include="Reshader\ReShade.ini" />
     <None Include="Resources\configgen-defaults.yml" />
+	<None Include="Resources\eeprom.bin" />
     <None Include="Resources\mame.ini" />
     <None Include="Reshader\ReShade.fxh" />
     <None Include="Reshader\ReShadeUI.fxh" />
+	<None Include="Resources\xbox_hdd.qcow2.zip" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
