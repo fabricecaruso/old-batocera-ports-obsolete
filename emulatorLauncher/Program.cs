@@ -73,7 +73,7 @@ namespace emulatorLauncher
             { "easyrpg", () => new EasyRpgGenerator() },                
             { "tsugaru", () => new TsugaruGenerator() },
 			{ "love", () => new LoveGenerator() },
-//			{ "xemu", () => new XEmuGenerator() },
+			{ "xemu", () => new XEmuGenerator() },
             { "arcadeflashweb", () => new ArcadeFlashWebGenerator() },			
             { "solarus", () => new SolarusGenerator() }            
         };
