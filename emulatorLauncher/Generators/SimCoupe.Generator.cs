@@ -21,7 +21,7 @@ namespace emulatorLauncher
             {
                 FileName = exe,
                 WorkingDirectory = path,
-                Arguments = "\"" + rom + "\" -fullscreen yes -autoboot yes",
+                Arguments = "\"" + rom + "\" -autoboot yes",
             };
         }
     }
