@@ -57,9 +57,146 @@ namespace emulatorLauncher.libRetro
 			ConfigureCitra(retroarchConfig, coreSettings, system, core);
 			ConfigureFbneo(retroarchConfig, coreSettings, system, core);
 			ConfigureGambatte(retroarchConfig, coreSettings, system, core);
+			ConfigurePpsspp(retroarchConfig, coreSettings, system, core);
 
             if (coreSettings.IsDirty)
                 coreSettings.Save(Path.Combine(RetroarchPath, "retroarch-core-options.cfg"), true);
+        }
+		
+		private void ConfigurePpsspp(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
+        {
+            if (core != "ppsspp")
+                return;
+
+            // Disable Bezel as default if a widescreen ratio is set. Can be manually set.
+            if (SystemConfig.isOptSet("ratio") && !SystemConfig.isOptSet("bezel"))
+            {
+                int idx = ratioIndexes.IndexOf(SystemConfig["ratio"]);
+                if (idx == 1 || idx == 2 || idx == 4 || idx == 6 || idx == 7 || idx == 9 || idx == 14 || idx == 16 || idx == 18 || idx == 19)
+                {
+                    retroarchConfig["aspect_ratio_index"] = idx.ToString();
+                    retroarchConfig["video_aspect_ratio_auto"] = "false";
+                    SystemConfig["bezel"] = "none";
+                }
+            }
+            else
+                SystemConfig["bezel"] = SystemConfig["bezel"];
+
+            coreSettings["ppsspp_cpu_core"] = "jit";
+			coreSettings["ppsspp_auto_frameskip"] = "disabled";
+			coreSettings["ppsspp_frameskip"] = "0";
+			coreSettings["ppsspp_frameskiptype"] = "number of frames";
+			coreSettings["ppsspp_rendering_mode"] = "buffered";
+			coreSettings["ppsspp_locked_cpu_speed"] = "off";
+			coreSettings["ppsspp_cheats"] = "enabled";
+			coreSettings["ppsspp_button_preference"] = "cross";
+
+            if (SystemConfig.isOptSet("PerformanceMode"))
+			{
+		        if ((SystemConfig["PerformanceMode"] == "Fast"))
+                {
+				    coreSettings["ppsspp_block_transfer_gpu"] = "disabled";
+				    coreSettings["ppsspp_spline_quality"] = "low";
+				    coreSettings["ppsspp_software_skinning"] = "enabled";
+				    coreSettings["ppsspp_gpu_hardware_transform"] = "enabled";
+                    coreSettings["ppsspp_vertex_cache"] = "enabled";
+				    coreSettings["ppsspp_fast_memory"] = "enabled";
+				    coreSettings["ppsspp_lazy_texture_caching"] = "enabled";
+				    coreSettings["ppsspp_retain_changed_textures"] = "enabled";
+				    coreSettings["ppsspp_force_lag_sync"] = "disabled";
+				    coreSettings["ppsspp_disable_slow_framebuffer_effects"] = "enabled";
+                }
+                else if ((SystemConfig["PerformanceMode"] == "Balanced"))
+                {
+				    coreSettings["ppsspp_block_transfer_gpu"] = "enabled";
+				    coreSettings["ppsspp_spline_quality"] = "medium";
+				    coreSettings["ppsspp_software_skinning"] = "disabled";
+				    coreSettings["ppsspp_gpu_hardware_transform"] = "enabled";
+                    coreSettings["ppsspp_vertex_cache"] = "enabled";
+				    coreSettings["ppsspp_fast_memory"] = "enabled";
+				    coreSettings["ppsspp_lazy_texture_caching"] = "disabled";
+				    coreSettings["ppsspp_retain_changed_textures"] = "disabled";
+				    coreSettings["ppsspp_force_lag_sync"] = "disabled";
+				    coreSettings["ppsspp_disable_slow_framebuffer_effects"] = "disabled";
+                }
+                else if ((SystemConfig["PerformanceMode"] == "Accurate"))
+			    {
+				    coreSettings["ppsspp_block_transfer_gpu"] = "enabled";
+				    coreSettings["ppsspp_spline_quality"] = "high";
+				    coreSettings["ppsspp_software_skinning"] = "disabled";
+				    coreSettings["ppsspp_gpu_hardware_transform"] = "disabled";
+                    coreSettings["ppsspp_vertex_cache"] = "disabled";
+				    coreSettings["ppsspp_fast_memory"] = "disabled";
+				    coreSettings["ppsspp_lazy_texture_caching"] = "disabled";
+				    coreSettings["ppsspp_retain_changed_textures"] = "disabled";
+				    coreSettings["ppsspp_force_lag_sync"] = "enabled";
+				    coreSettings["ppsspp_disable_slow_framebuffer_effects"] = "disabled";
+                }
+			}
+            else
+			{
+				coreSettings["ppsspp_block_transfer_gpu"] = "enabled";
+				coreSettings["ppsspp_spline_quality"] = "medium";
+				coreSettings["ppsspp_software_skinning"] = "disabled";
+				coreSettings["ppsspp_gpu_hardware_transform"] = "enabled";
+				coreSettings["ppsspp_vertex_cache"] = "enabled";
+				coreSettings["ppsspp_fast_memory"] = "enabled";
+				coreSettings["ppsspp_lazy_texture_caching"] = "disabled";
+				coreSettings["ppsspp_retain_changed_textures"] = "disabled";
+				coreSettings["ppsspp_force_lag_sync"] = "disabled";
+				coreSettings["ppsspp_disable_slow_framebuffer_effects"] = "disabled";
+			}
+				
+            if (SystemConfig.isOptSet("ppsspp_internal_resolution"))
+                coreSettings["ppsspp_internal_resolution"] = SystemConfig["ppsspp_internal_resolution"];
+            else
+                coreSettings["ppsspp_internal_resolution"] = "1440x816";
+
+            if (SystemConfig.isOptSet("ppsspp_texture_anisotropic_filtering"))
+                coreSettings["ppsspp_texture_anisotropic_filtering"] = SystemConfig["ppsspp_texture_anisotropic_filtering"];
+            else
+                coreSettings["ppsspp_texture_anisotropic_filtering"] = "off";
+				
+			if (SystemConfig.isOptSet("ppsspp_texture_filtering"))
+                coreSettings["ppsspp_texture_filtering"] = SystemConfig["ppsspp_texture_filtering"];
+            else
+                coreSettings["ppsspp_texture_filtering"] = "auto";
+				
+			if (SystemConfig.isOptSet("ppsspp_texture_scaling_type"))
+                coreSettings["ppsspp_texture_scaling_type"] = SystemConfig["ppsspp_texture_scaling_type"];
+            else
+                coreSettings["ppsspp_texture_scaling_type"] = "xbrz";
+			
+			if (SystemConfig.isOptSet("ppsspp_texture_scaling_level"))
+                coreSettings["ppsspp_texture_scaling_level"] = SystemConfig["ppsspp_texture_scaling_level"];
+            else
+                coreSettings["ppsspp_texture_scaling_level"] = "auto";
+			
+			if (SystemConfig.isOptSet("ppsspp_texture_deposterize"))
+                coreSettings["ppsspp_texture_deposterize"] = SystemConfig["ppsspp_texture_deposterize"];
+            else
+                coreSettings["ppsspp_texture_deposterize"] = "disabled";
+			
+			if (SystemConfig.isOptSet("ppsspp_language"))
+                coreSettings["ppsspp_language"] = SystemConfig["ppsspp_language"];
+            else
+                coreSettings["ppsspp_language"] = "automatic";
+			
+			if (SystemConfig.isOptSet("ppsspp_io_timing_method"))
+                coreSettings["ppsspp_io_timing_method"] = SystemConfig["ppsspp_io_timing_method"];
+            else
+                coreSettings["ppsspp_io_timing_method"] = "Fast";
+			
+			if (SystemConfig.isOptSet("ppsspp_ignore_bad_memory_access"))
+                coreSettings["ppsspp_ignore_bad_memory_access"] = SystemConfig["ppsspp_ignore_bad_memory_access"];
+            else
+                coreSettings["ppsspp_ignore_bad_memory_access"] = "enabled";
+			
+			if (SystemConfig.isOptSet("ppsspp_texture_replacement"))
+                coreSettings["ppsspp_texture_replacement"] = SystemConfig["ppsspp_texture_replacement"];
+            else
+                coreSettings["ppsspp_texture_replacement"] = "disabled";
+
         }
 		
 		private void ConfigureGambatte(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
@@ -1000,7 +1137,7 @@ namespace emulatorLauncher.libRetro
 			coreSettings["mupen64plus-txHiresFullAlphaChannel"] = "True";
 			coreSettings["mupen64plus-GLideN64IniBehaviour"] = "early";
 			
-			// Performance presets
+			// Overscan
 			if (SystemConfig.isOptSet("CropOverscan") && SystemConfig.getOptBoolean("CropOverscan"))
 			{
 				coreSettings["mupen64plus-OverscanBottom"] = "0";
@@ -1087,7 +1224,7 @@ namespace emulatorLauncher.libRetro
                 SystemConfig["bezel"] = "none";
 			}
 			else
-				coreSettings["mupen64plus-aspect"] = "4:3";
+				coreSettings["mupen64plus-aspect"] = coreSettings["mupen64plus-aspect"];
 				
 			// 4:3 resolution
             if (SystemConfig.isOptSet("43screensize"))
