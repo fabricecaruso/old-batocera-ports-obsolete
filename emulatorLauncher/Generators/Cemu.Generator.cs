@@ -52,14 +52,6 @@ namespace emulatorLauncher
             }
 
             CreateControllerConfiguration(path);
-			
-			string romdir = Path.GetDirectoryName(rom);
-
-            if (Path.GetExtension(rom).ToLower() == ".m3u")
-            {
-                rom = File.ReadAllText(rom);
-                rom = Path.Combine(romdir, rom.Substring(1));
-            }
 
             return new ProcessStartInfo()
             {
