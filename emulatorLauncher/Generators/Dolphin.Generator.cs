@@ -85,17 +85,45 @@ namespace emulatorLauncher
             {
                 using (var ini = new IniFile(iniFile, true))
                 {
-                    if (SystemConfig.isOptSet("ratio"))
-                    {
-                        if (SystemConfig["ratio"] == "4/3")
-                            ini.WriteValue("Settings", "AspectRatio", "2");
-                        else if (SystemConfig["ratio"] == "16/9")
-                            ini.WriteValue("Settings", "AspectRatio", "1");
-                        else
-                            ini.WriteValue("Settings", "AspectRatio", "0");
-                    }
-                    else
-                        ini.WriteValue("Settings", "AspectRatio", "0");
+					
+					if (SystemConfig.isOptSet("ratio"))
+					{
+						if (SystemConfig["ratio"] == "4/3")
+						{
+							ini.WriteValue("Settings", "AspectRatio", "2");
+						}
+						else if (SystemConfig["ratio"] == "16/9")
+						{
+							ini.WriteValue("Settings", "AspectRatio", "1");
+							SystemConfig["bezel"] = "none";
+
+						}
+						else if (SystemConfig["ratio"] == "Stretched")
+						{
+							ini.WriteValue("Settings", "AspectRatio", "3");
+							SystemConfig["bezel"] = "none";
+	
+						}
+					}
+					else
+					{
+						ini.WriteValue("Settings", "AspectRatio", "0");
+						SystemConfig["bezel"] = SystemConfig["bezel"];
+					}
+					
+					// widescreen hack but only if enable cheats is not enabled - Default Off
+					if (SystemConfig.isOptSet("widescreen_hack")) 
+					{
+						if (!SystemConfig.getOptBoolean("widescreen_hack"))							
+						{
+							ini.WriteValue("Settings", "wideScreenHack", "False");						
+						}
+						else
+						{
+							ini.WriteValue("Settings", "wideScreenHack", "True");
+							ini.WriteValue("Settings", "AspectRatio", "3");
+						}
+					}
 
                     // draw or not FPS
                     if (SystemConfig.isOptSet("DrawFramerate") && SystemConfig.getOptBoolean("DrawFramerate"))
@@ -148,16 +176,7 @@ namespace emulatorLauncher
                     else
                         ini.WriteValue("Settings", "MSAA", "0x00000001");
 
-                    // SSAA = True
-
-                    // widescreen hack but only if enable cheats is not enabled - Default Off
-                    if (SystemConfig.isOptSet("widescreen_hack"))
-                    {
-                        if (SystemConfig.getOptBoolean("widescreen_hack"))
-                            ini.WriteValue("Settings", "wideScreenHack", "True");
-                        else
-                            ini.Remove("Settings", "wideScreenHack");
-                    }
+                    // SSAA = True          
 
                     // various performance hacks - Default Off
                     if (SystemConfig.isOptSet("perf_hacks"))
