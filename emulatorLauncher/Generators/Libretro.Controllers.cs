@@ -111,19 +111,21 @@ namespace emulatorLauncher.libRetro
         {
             { InputKey.start, "exit_emulator"},  
 
-            { InputKey.b, "reset"}, 
+            { InputKey.b, "pause_toggle"}, 
             { InputKey.a, "menu_toggle"},  // A et B inversés par rapport à batocera
 
             { InputKey.x, "load_state"}, 
             { InputKey.y, "save_state"}, 
-            { InputKey.pageup, "screenshot"}, 
+            { InputKey.pageup, "disk_eject_toggle"}, 
             //{ InputKey.start, "exit_emulator"},  
             { InputKey.up, "state_slot_increase"},  
             { InputKey.down, "state_slot_decrease"},  
             { InputKey.left, "rewind"},  
             { InputKey.right, "hold_fast_forward"}, 
-            { InputKey.l2, "shader_prev"},  
-            { InputKey.r2, "shader_next"},              
+            { InputKey.l2, "disk_prev"},  
+            { InputKey.r2, "disk_next"},
+			{ InputKey.l3, "fps_toggle"},  
+            { InputKey.r3, "screenshot"},			
             { InputKey.pagedown, "ai_service"}      
         };
         
@@ -194,8 +196,8 @@ namespace emulatorLauncher.libRetro
         {
             Dictionary<InputKey, string> retroarchbtns = new Dictionary<InputKey, string>()
             {
-                { InputKey.b, "a" },
-                { InputKey.a, "b" }, // A et B inversés par rapport à batocera
+                { InputKey.b, "b" },
+                { InputKey.a, "a" },
                 { InputKey.x, "x" }, 
                 { InputKey.y, "y" },
                 { InputKey.pageup, "l" },
