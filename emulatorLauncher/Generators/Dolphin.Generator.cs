@@ -102,7 +102,6 @@ namespace emulatorLauncher
 						{
 							ini.WriteValue("Settings", "AspectRatio", "3");
 							SystemConfig["bezel"] = "none";
-	
 						}
 					}
 					else
@@ -170,7 +169,7 @@ namespace emulatorLauncher
                     else
                         ini.WriteValue("Enhancements", "MaxAnisotropy", "0");
 
-                    // anisotropic filtering - Auto 0
+                    // antialiasing
                     if (SystemConfig.isOptSet("antialiasing"))
                         ini.WriteValue("Settings", "MSAA", "0x0000000" + SystemConfig["antialiasing"]);
                     else
