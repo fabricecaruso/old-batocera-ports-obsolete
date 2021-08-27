@@ -75,7 +75,8 @@ namespace emulatorLauncher
 			{ "love", () => new LoveGenerator() },
 			{ "xemu", () => new XEmuGenerator() },
             { "arcadeflashweb", () => new ArcadeFlashWebGenerator() },			
-            { "solarus", () => new SolarusGenerator() }            
+            { "solarus", () => new SolarusGenerator() },
+			{ "pinballfx3", () => new PinballFX3Generator() }			
         };
 
         public static ConfigFile AppConfig { get; private set; }
