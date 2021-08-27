@@ -17,7 +17,7 @@ namespace emulatorLauncher
 
             string exe = Path.Combine(path, "mame64.exe");
             if (!File.Exists(exe))
-                exe = Path.Combine(path, "mame32.exe");
+                exe = Path.Combine(path, "mame.exe");
 
             if (!File.Exists(exe))
                 return null;
