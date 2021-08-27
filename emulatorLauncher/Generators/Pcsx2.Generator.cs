@@ -29,7 +29,6 @@ namespace emulatorLauncher
                 bezel.Dispose();
         }
 
-
         private string _path;
         private BezelFiles _bezelFileInfo;
         private ScreenResolution _resolution;
@@ -43,7 +42,7 @@ namespace emulatorLauncher
             if (!File.Exists(exe))
                 return null;
 
-            SetupPaths();
+            SetupPaths(core);
             SetupVM();
             SetupLilyPad();
             SetupGSDx(resolution);
@@ -70,9 +69,8 @@ namespace emulatorLauncher
                 Arguments = args + " \"" + rom + "\"", 
             };
         }
-
-        private void SetupPaths()
-        {
+        private void SetupPaths(string core)        
+        {          
             string iniFile = Path.Combine(_path, "inis", "PCSX2_ui.ini");
             if (File.Exists(iniFile))
             {
@@ -117,7 +115,21 @@ namespace emulatorLauncher
                         ini.WriteValue("GSWindow", "IsFullscreen", "enabled");
 
                         ini.WriteValue("Filenames", "PAD", "LilyPad.dll");
-						ini.WriteValue("Filenames", "GS", "GSdx32-AVX2.dll");
+
+                        if (core == "pcsx2-avx2" || core == "avx2")
+                        {
+                            ini.WriteValue("Filenames", "GS", "GSdx32-AVX2.dll");
+                        }
+                        else if (core == "pcsx2-sse2" || core == "sse2")
+                        {
+                            ini.WriteValue("Filenames", "GS", "GSdx32-SSE2.dll");
+                        }
+                        else if (core == "pcsx2-sse4" || core == "sse4")
+                        {
+                            ini.WriteValue("Filenames", "GS", "GSdx32-SSE4.dll");
+                        }
+                        else
+                            ini.WriteValue("Filenames", "GS", "GSdx32-AVX2.dll");
                     }
                 }
                 catch { }
@@ -200,30 +212,30 @@ namespace emulatorLauncher
                                 ini.WriteValue("Settings", "resy", (Screen.PrimaryScreen.Bounds.Height * 2).ToString());
                             }
                         }
-						
+
                         ini.WriteValue("Settings", "shaderfx", "1");
-						
-						if (SystemConfig.isOptSet("TVShader") && !string.IsNullOrEmpty(SystemConfig["TVShader"]))
+
+                        if (SystemConfig.isOptSet("TVShader") && !string.IsNullOrEmpty(SystemConfig["TVShader"]))
                             ini.WriteValue("Settings", "TVShader", SystemConfig["TVShader"]);
                         else
                             ini.WriteValue("Settings", "TVShader", "0");
-						
-						if (SystemConfig.isOptSet("Offset") && !string.IsNullOrEmpty(SystemConfig["Offset"]))
+
+                        if (SystemConfig.isOptSet("Offset") && !string.IsNullOrEmpty(SystemConfig["Offset"]))
                             ini.WriteValue("Settings", "UserHacks_WildHack", SystemConfig["Offset"]);
                         else
                             ini.WriteValue("Settings", "UserHacks_WildHack", "0");
-						
-						if (SystemConfig.isOptSet("bilinear_filtering") && !string.IsNullOrEmpty(SystemConfig["bilinear_filtering"]))
+
+                        if (SystemConfig.isOptSet("bilinear_filtering") && !string.IsNullOrEmpty(SystemConfig["bilinear_filtering"]))
                             ini.WriteValue("Settings", "linear_present", SystemConfig["bilinear_filtering"]);
                         else
                             ini.WriteValue("Settings", "linear_present", "0");
-						
-						if (SystemConfig.isOptSet("fxaa") && !string.IsNullOrEmpty(SystemConfig["fxaa"]))
+
+                        if (SystemConfig.isOptSet("fxaa") && !string.IsNullOrEmpty(SystemConfig["fxaa"]))
                             ini.WriteValue("Settings", "fxaa", SystemConfig["fxaa"]);
                         else
                             ini.WriteValue("Settings", "fxaa", "0");
-						
-						if (SystemConfig.isOptSet("renderer") && !string.IsNullOrEmpty(SystemConfig["renderer"]))
+
+                        if (SystemConfig.isOptSet("renderer") && !string.IsNullOrEmpty(SystemConfig["renderer"]))
                             ini.WriteValue("Settings", "Renderer", SystemConfig["renderer"]);
                         else
                             ini.WriteValue("Settings", "Renderer", "12");
@@ -258,6 +270,7 @@ namespace emulatorLauncher
                             ini.WriteValue("Settings", "osd_monitor_enabled", "0");
                             ini.WriteValue("Settings", "osd_indicator_enabled", "0");
                         }
+                        
                     }
 
                 }
