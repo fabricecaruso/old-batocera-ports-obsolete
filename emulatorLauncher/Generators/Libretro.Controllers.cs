@@ -12,19 +12,18 @@ namespace emulatorLauncher.libRetro
     {
         private static string _inputDriver = "sdl2";
         private static HashSet<string> disabledAnalogModeSystems = new HashSet<string> { "n64", "dreamcast", "gamecube", "3ds" };
-
         public static bool WriteControllersConfig(ConfigFile retroconfig, string system, string core)
         {
             if (Program.SystemConfig.isOptSet("disableautocontrollers") && Program.SystemConfig["disableautocontrollers"] == "1")
                 return false;
-           
+
             /*
-            bool allXInput = !Program.Controllers.Where(c => c.Input != null && c.Input.Type != "keyboard").Any(j => !j.Input.IsXInputDevice());
-            if (allXInput)
-                _inputDriver = "xinput";
-            else
-                SetupAutoConfig();
-            */
+             bool allXInput = !Program.Controllers.Where(c => c.Input != null && c.Input.Type != "keyboard").Any(j => !j.Input.IsXInputDevice());
+             if (allXInput)
+                 _inputDriver = "xinput";
+             else
+                 SetupAutoConfig();
+             */
 
             // no menu in non full uimode
             if (Program.SystemConfig.isOptSet("uimode") && Program.SystemConfig["uimode"] != "Full" && retroarchspecials.ContainsKey(InputKey.a))
@@ -252,6 +251,7 @@ namespace emulatorLauncher.libRetro
                 };
             }
             
+			
             if (system == "n64")
             {
                 // some input adaptations for some cores...
@@ -262,7 +262,7 @@ namespace emulatorLauncher.libRetro
                     retroarchbtns[InputKey.l2] = "l";
                 }
             }
-
+			
             var config = new Dictionary<string, string>();
 
             foreach (var btnkey in retroarchbtns)
