@@ -26,8 +26,6 @@ namespace emulatorLauncher.libRetro
             if (string.IsNullOrEmpty(RetroarchCorePath))
                 RetroarchCorePath = Path.Combine(RetroarchPath, "cores");
         }
-
-
         private void Configure(string system, string core, string rom, ScreenResolution resolution)
         {
             var retroarchConfig = ConfigFile.FromFile(Path.Combine(RetroarchPath, "retroarch.cfg"), new ConfigFileOptions() { CaseSensitive = true });
@@ -35,7 +33,7 @@ namespace emulatorLauncher.libRetro
             retroarchConfig["global_core_options"] = "true";
             retroarchConfig["core_options_path"] = ""; //',             '"/userdata/system/configs/retroarch/cores/retroarch-core-options.cfg"')
 
-            retroarchConfig["input_autodetect_enable"] = "false";
+            retroarchConfig["input_autodetect_enable"] = "true";
             retroarchConfig["rgui_extended_ascii"] = "true";
             retroarchConfig["rgui_show_start_screen"] = "false";
 
@@ -43,7 +41,7 @@ namespace emulatorLauncher.libRetro
             retroarchConfig["pause_nonactive"] = "false";
             retroarchConfig["video_fullscreen"] = "true";
             retroarchConfig["menu_driver"] = "ozone";
-            
+
             if (SystemConfig.isOptSet("monitor"))
             {
                 int monitorId;
@@ -88,14 +86,14 @@ namespace emulatorLauncher.libRetro
                     retroarchConfig["screenshot_directory"] = @":\screenshots";
             }
 
-            try 
+            try
             {
                 string cacheDirectory = Path.Combine(Path.GetTempPath(), "retroarch");
                 Directory.CreateDirectory(cacheDirectory);
                 retroarchConfig["cache_directory"] = cacheDirectory;
             }
             catch { }
-            
+
             if (!string.IsNullOrEmpty(AppConfig["saves"]) && Directory.Exists(AppConfig["saves"]))
             {
                 string savePath = Path.Combine(AppConfig.GetFullPath("saves"), system);
@@ -192,19 +190,19 @@ namespace emulatorLauncher.libRetro
 
             if (SystemConfig.isOptSet("autosave") && SystemConfig.getOptBoolean("autosave"))
             {
-              //  retroarchConfig["menu_show_load_content_animation"] = "false";
+                //  retroarchConfig["menu_show_load_content_animation"] = "false";
                 retroarchConfig["savestate_auto_save"] = "true";
                 retroarchConfig["savestate_auto_load"] = "true";
             }
             else
             {
-              //  retroarchConfig["menu_show_load_content_animation"] = "true";
+                //  retroarchConfig["menu_show_load_content_animation"] = "true";
                 retroarchConfig["savestate_auto_save"] = "false";
                 retroarchConfig["savestate_auto_load"] = "false";
             }
 
-//            retroarchConfig["menu_show_load_content_animation"] = "true";
-//            retroarchConfig["video_gpu_screenshot"] = "false";
+            //            retroarchConfig["menu_show_load_content_animation"] = "true";
+            //            retroarchConfig["video_gpu_screenshot"] = "false";
 
             // SaveState To add
             if (SystemConfig.isOptSet("state_slot"))
@@ -246,7 +244,7 @@ namespace emulatorLauncher.libRetro
                 if (SystemConfig.isOptSet("psxcontroller2"))
                     retroarchConfig["input_libretro_device_p2"] = SystemConfig["psxcontroller2"];
             }
-            
+
             if (SystemConfig["retroachievements"] == "true" && systemToRetroachievements.Contains(system))
             {
                 retroarchConfig["cheevos_enable"] = "true";
@@ -284,7 +282,7 @@ namespace emulatorLauncher.libRetro
                     retroarchConfig["netplay_client_swap_input"] = "true";
                 }
 
-                  // connect as client
+                // connect as client
                 if (SystemConfig["netplaymode"] == "client")
                 {
                     if (SystemConfig.isOptSet("netplaypass"))
@@ -370,6 +368,8 @@ namespace emulatorLauncher.libRetro
                 _video_driver = retroarchConfig["video_driver"];
                 retroarchConfig["video_driver"] = "d3d11";
             }
+            else
+                retroarchConfig["video_driver"] = retroarchConfig["video_driver"];
 
             SetLanguage(retroarchConfig);
 
@@ -441,29 +441,29 @@ namespace emulatorLauncher.libRetro
             {
                 imageSize = GetImageSize(overlay_png_file);
             }
-            catch 
+            catch
             {
                 return;
             }
 
             BezelInfo infos = bezelInfo.BezelInfos;
 
-             // if image is not at the correct size, find the correct size
+            // if image is not at the correct size, find the correct size
             bool bezelNeedAdaptation = false;
             bool viewPortUsed = true;
 
             if (!infos.IsValid())
                 viewPortUsed = false;
 
-         // for testing ->   
+            // for testing ->   
             //resolution = ScreenResolution.Parse("2280x1080x32x60");
             //resolution = ScreenResolution.Parse("3840x2160x32x60");                    
-            
+
             int resX = (resolution == null ? Screen.PrimaryScreen.Bounds.Width : resolution.Width);
             int resY = (resolution == null ? Screen.PrimaryScreen.Bounds.Height : resolution.Height);
 
-            float screenRatio  = (float) resX / (float) resY;
-            float bezelRatio = (float)imageSize.Width / (float) imageSize.Height;
+            float screenRatio = (float)resX / (float)resY;
+            float bezelRatio = (float)imageSize.Width / (float)imageSize.Height;
 
             if (viewPortUsed)
             {
@@ -485,25 +485,25 @@ namespace emulatorLauncher.libRetro
             }
             else
             {
-                 // when there is no information about width and height in the .info, assume that the tv is HD 16/9 and infos are core provided
+                // when there is no information about width and height in the .info, assume that the tv is HD 16/9 and infos are core provided
                 if (screenRatio < 1.6) // use bezels only for 16:10, 5:3, 16:9 and wider aspect ratios
                     return;
 
                 infos.width = imageSize.Width;
                 infos.height = imageSize.Height;
                 bezelNeedAdaptation = true;
-                
+
                 if (!SystemConfig.isOptSet("ratio"))
                     retroarchConfig["aspect_ratio_index"] = ratioIndexes.IndexOf("core").ToString(); // overwritten from the beginning of this file
             }
 
             string overlay_cfg_file = Path.Combine(RetroarchPath, "custom-overlay.cfg");
-            
+
             retroarchConfig["input_overlay_enable"] = "true";
             retroarchConfig["input_overlay_scale"] = "1.0";
             retroarchConfig["input_overlay"] = overlay_cfg_file;
             retroarchConfig["input_overlay_hide_in_menu"] = "true";
-                    
+
             if (!infos.opacity.HasValue)
                 infos.opacity = 1.0f;
             if (!infos.messagex.HasValue)
@@ -567,8 +567,14 @@ namespace emulatorLauncher.libRetro
                 retroarchConfig["video_message_pos_x"] = infos.messagex.Value.ToString(CultureInfo.InvariantCulture);
                 retroarchConfig["video_message_pos_y"] = infos.messagey.Value.ToString(CultureInfo.InvariantCulture);
             }
-            
+
             retroarchConfig["input_overlay_show_mouse_cursor"] = "false";
+
+            // Monitor index
+            if (SystemConfig.isOptSet("MonitorIndex") && SystemConfig["MonitorIndex"] != "config")
+                retroarchConfig["video_monitor_index"] = SystemConfig["MonitorIndex"];
+            else
+                retroarchConfig["video_monitor_index"] = retroarchConfig["video_monitor_index"];
 
             StringBuilder fd = new StringBuilder();
             fd.AppendLine("overlays = 1");
@@ -668,7 +674,7 @@ namespace emulatorLauncher.libRetro
                 }
             }
 
-            Configure(system, core, rom, resolution);            
+            Configure(system, core, rom, resolution);
 
             List<string> commandArray = new List<string>();
 
@@ -742,9 +748,9 @@ namespace emulatorLauncher.libRetro
         static List<string> ratioIndexes = new List<string> { "4/3", "16/9", "16/10", "16/15", "21/9", "1/1", "2/1", "3/2", "3/4", "4/1", "4/4", "5/4", "6/5", "7/9", "8/3",
                 "8/7", "19/12", "19/14", "30/17", "32/9", "config", "squarepixel", "core", "custom" };
 
-        static List<string> systemToRetroachievements = new List<string> { 
-            "atari2600", "atari7800", "atarijaguar", "colecovision", "nes", "snes", "virtualboy", "n64", "sg1000", "mastersystem", "megadrive", 
-            "segacd", "sega32x", "saturn", "pcengine", "pcenginecd", "supergrafx", "psx", "mame", "hbmame", "fbneo", "neogeo", "lightgun", "apple2", 
+        static List<string> systemToRetroachievements = new List<string> {
+            "atari2600", "atari7800", "atarijaguar", "colecovision", "nes", "snes", "virtualboy", "n64", "sg1000", "mastersystem", "megadrive",
+            "segacd", "sega32x", "saturn", "pcengine", "pcenginecd", "supergrafx", "psx", "mame", "hbmame", "fbneo", "neogeo", "lightgun", "apple2",
             "lynx", "wswan", "wswanc", "gb", "gbc", "gba", "nds", "pokemini", "gamegear", "ngp", "ngpc"};
 
         static List<string> systemNoRewind = new List<string>() { "nds", "3ds", "sega32x", "wii", "gamecube", "gc", "psx", "zxspectrum", "odyssey2", "n64", "dreamcast", "atomiswave", "naomi", "neogeocd", "saturn", "mame", "hbmame", "fbneo", "psp" };
@@ -821,7 +827,7 @@ namespace emulatorLauncher.libRetro
         {
             new SubSystem("fbneo", "colecovision", "cv"),
 
-            new SubSystem("fbneo", "msx", "msx"),                        
+            new SubSystem("fbneo", "msx", "msx"),
             new SubSystem("fbneo", "msx1", "msx"),
 
             new SubSystem("fbneo", "supergrafx", "sgx"),
@@ -830,17 +836,17 @@ namespace emulatorLauncher.libRetro
 
             new SubSystem("fbneo", "turbografx", "tg"),
             new SubSystem("fbneo", "turbografx16", "tg"),
-            
+
             new SubSystem("fbneo", "gamegear", "gg"),
             new SubSystem("fbneo", "mastersystem", "sms"),
             new SubSystem("fbneo", "megadrive", "md"),
 
             new SubSystem("fbneo", "sg1000", "sg1k"),
             new SubSystem("fbneo", "sg-1000", "sg1k"),
-            
+
             new SubSystem("fbneo", "zxspectrum", "spec"),
 
-            new SubSystem("fbneo", "neogeocd", "neocd")            
+            new SubSystem("fbneo", "neogeocd", "neocd")
         };
 
         public static string GetSubSystem(string core, string system)
@@ -863,6 +869,6 @@ namespace emulatorLauncher.libRetro
         public string Core { get; set; }
         public string SubSystemId { get; set; }
     }
-    
+
 
 }
