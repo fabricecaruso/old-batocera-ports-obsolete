@@ -12,18 +12,19 @@ namespace emulatorLauncher.libRetro
     {
         private static string _inputDriver = "sdl2";
         private static HashSet<string> disabledAnalogModeSystems = new HashSet<string> { "n64", "dreamcast", "gamecube", "3ds" };
+
         public static bool WriteControllersConfig(ConfigFile retroconfig, string system, string core)
         {
             if (Program.SystemConfig.isOptSet("disableautocontrollers") && Program.SystemConfig["disableautocontrollers"] == "1")
                 return false;
-
+           
             /*
-             bool allXInput = !Program.Controllers.Where(c => c.Input != null && c.Input.Type != "keyboard").Any(j => !j.Input.IsXInputDevice());
-             if (allXInput)
-                 _inputDriver = "xinput";
-             else
-                 SetupAutoConfig();
-             */
+            bool allXInput = !Program.Controllers.Where(c => c.Input != null && c.Input.Type != "keyboard").Any(j => !j.Input.IsXInputDevice());
+            if (allXInput)
+                _inputDriver = "xinput";
+            else
+                SetupAutoConfig();
+            */
 
             // no menu in non full uimode
             if (Program.SystemConfig.isOptSet("uimode") && Program.SystemConfig["uimode"] != "Full" && retroarchspecials.ContainsKey(InputKey.a))
@@ -110,21 +111,19 @@ namespace emulatorLauncher.libRetro
         {
             { InputKey.start, "exit_emulator"},  
 
-            { InputKey.b, "pause_toggle"}, 
+            { InputKey.b, "reset"}, 
             { InputKey.a, "menu_toggle"},  // A et B inversés par rapport à batocera
 
             { InputKey.x, "load_state"}, 
             { InputKey.y, "save_state"}, 
-            { InputKey.pageup, "disk_eject_toggle"}, 
+            { InputKey.pageup, "screenshot"}, 
             //{ InputKey.start, "exit_emulator"},  
             { InputKey.up, "state_slot_increase"},  
             { InputKey.down, "state_slot_decrease"},  
             { InputKey.left, "rewind"},  
             { InputKey.right, "hold_fast_forward"}, 
-            { InputKey.l2, "disk_prev"},  
-            { InputKey.r2, "disk_next"},
-			{ InputKey.l3, "fps_toggle"},  
-            { InputKey.r3, "screenshot"},			
+            { InputKey.l2, "shader_prev"},  
+            { InputKey.r2, "shader_next"},              
             { InputKey.pagedown, "ai_service"}      
         };
         
@@ -195,8 +194,8 @@ namespace emulatorLauncher.libRetro
         {
             Dictionary<InputKey, string> retroarchbtns = new Dictionary<InputKey, string>()
             {
-                { InputKey.b, "b" },
-                { InputKey.a, "a" },
+                { InputKey.b, "a" },
+                { InputKey.a, "b" }, // A et B inversés par rapport à batocera
                 { InputKey.x, "x" }, 
                 { InputKey.y, "y" },
                 { InputKey.pageup, "l" },
@@ -251,7 +250,6 @@ namespace emulatorLauncher.libRetro
                 };
             }
             
-			
             if (system == "n64")
             {
                 // some input adaptations for some cores...
@@ -262,7 +260,7 @@ namespace emulatorLauncher.libRetro
                     retroarchbtns[InputKey.l2] = "l";
                 }
             }
-			
+
             var config = new Dictionary<string, string>();
 
             foreach (var btnkey in retroarchbtns)
