@@ -630,12 +630,15 @@ namespace emulatorLauncher.libRetro
                 }
             }
 
-            BindFeature(coreSettings, "nestopia_nospritelimit", "nestopia_nospritelimit", "enabled");
+            BindFeature(coreSettings, "nestopia_nospritelimit", "nestopia_nospritelimit", "disabled");
             BindFeature(coreSettings, "nestopia_palette", "nestopia_palette", "consumer");
             BindFeature(coreSettings, "nestopia_blargg_ntsc_filter", "nestopia_blargg_ntsc_filter", "disabled");
             BindFeature(coreSettings, "nestopia_overclock", "nestopia_overclock", "1x");
             BindFeature(coreSettings, "nestopia_select_adapter", "nestopia_select_adapter", "auto");
-            BindFeature(coreSettings, "nestopia_show_crosshair", "nestopia_show_crosshair", "enabled");
+            BindFeature(coreSettings, "nestopia_show_crosshair", "nestopia_show_crosshair", "disabled");
+            BindFeature(coreSettings, "nestopia_favored_system", "nestopia_favored_system", "auto");
+            BindFeature(coreSettings, "nestopia_button_shift", "nestopia_button_shift", "disabled");
+
 
             if (SystemConfig.getOptBoolean("use_guns"))
             {
