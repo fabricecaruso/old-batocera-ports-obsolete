@@ -1325,11 +1325,22 @@ namespace emulatorLauncher.libRetro
             BindFeature(coreSettings, "reicast_render_to_texture_upscaling", "render_to_texture_upscaling", "1x");
             BindFeature(coreSettings, "reicast_force_wince", "force_wince", "disabled");
             BindFeature(coreSettings, "reicast_cable_type", "cable_type", "VGA (RGB)");
-            BindFeature(coreSettings, "reicast_internal_resolution", "internal_resolution", "1280x960");
+            BindFeature(coreSettings, "reicast_internal_resolution", "internal_resolution", "640x480");
+            BindFeature(coreSettings, "reicast_force_freeplay", "reicast_force_freeplay", "disabled");
+            BindFeature(coreSettings, "reicast_allow_service_buttons", "reicast_allow_service_buttons", "disabled");
+            BindFeature(coreSettings, "reicast_boot_to_bios", "reicast_boot_to_bios", "disabled");
+            BindFeature(coreSettings, "reicast_hle_bios", "reicast_hle_bios", "disabled");
+            BindFeature(coreSettings, "reicast_per_content_vmus", "reicast_per_content_vmus", "disabled");
+            BindFeature(coreSettings, "reicast_language", "reicast_language", "English");
+            BindFeature(coreSettings, "reicast_region", "reicast_region", "Japan");
+            BindFeature(coreSettings, "reicast_dump_textures", "reicast_dump_textures", "disabled");
+            BindFeature(coreSettings, "reicast_custom_textures", "reicast_custom_textures", "disabled");
+            BindFeature(coreSettings, "reicast_alpha_sorting", "reicast_alpha_sorting", "per-triangle (normal)");
+            BindFeature(coreSettings, "reicast_enable_rttb", "reicast_enable_rttb", "disabled");
+            BindFeature(coreSettings, "reicast_mipmapping", "reicast_mipmapping", "disabled");
 
             // toadd
             BindFeature(coreSettings, "reicast_synchronous_rendering", "reicast_synchronous_rendering", "enabled");
-            BindFeature(coreSettings, "reicast_mipmapping", "reicast_mipmapping", "disabled");
             BindFeature(coreSettings, "reicast_frame_skipping", "reicast_frame_skipping", "disabled");
             
             if (SystemConfig.getOptBoolean("use_guns"))
