@@ -1280,6 +1280,13 @@ namespace emulatorLauncher.libRetro
             BindFeature(coreSettings, "dosbox_pure_sblaster_type", "sblaster_type", "sb16");
             BindFeature(coreSettings, "dosbox_pure_svga", "svga", "vesa_nolfb");
             BindFeature(coreSettings, "dosbox_pure_keyboard_layout", "keyboard_layout", "us");
+            BindFeature(coreSettings, "dosbox_pure_force60fps", "dosbox_pure_force60fps", "false");
+            BindFeature(coreSettings, "dosbox_pure_perfstats", "dosbox_pure_perfstats", "none");
+            BindFeature(coreSettings, "dosbox_pure_conf", "dosbox_pure_conf", "false");
+            BindFeature(coreSettings, "dosbox_pure_voodoo", "dosbox_pure_voodoo", "off");
+            BindFeature(coreSettings, "dosbox_pure_voodoo_perf", "dosbox_pure_voodoo_perf", "1");
+            BindFeature(coreSettings, "dosbox_pure_bootos_ramdisk", "dosbox_pure_bootos_ramdisk", "false");
+            BindFeature(coreSettings, "dosbox_pure_bootos_forcenormal", "dosbox_pure_bootos_forcenormal", "false");
         }
 
         private void ConfigurePuae(ConfigFile retroarchConfig, ConfigFile coreSettings, string system, string core)
