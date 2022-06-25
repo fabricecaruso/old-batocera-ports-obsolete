@@ -84,6 +84,8 @@ namespace emulatorLauncher
             SetupLilyPad();
             SetupGSDx(resolution);
 
+            File.WriteAllText(Path.Combine(_path, "portable.ini"), "RunWizard=0");
+
             if (!SystemConfig.isOptSet("ratio") || SystemConfig["ratio"] == "4:3")
                 _bezelFileInfo = BezelFiles.GetBezelFiles(system, rom, resolution);
 
@@ -202,6 +204,8 @@ namespace emulatorLauncher
             {
                 using (var ini = new IniFile(iniFile))
                 {
+                    ini.WriteValue("EmuCore", "EnableRecordingTools", "disabled");
+
                     if (!string.IsNullOrEmpty(SystemConfig["VSync"]))
                         ini.WriteValue("EmuCore/GS", "VsyncEnable", SystemConfig["VSync"]);
                     else
