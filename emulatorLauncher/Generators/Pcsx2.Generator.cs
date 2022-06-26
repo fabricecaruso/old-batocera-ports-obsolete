@@ -123,6 +123,8 @@ namespace emulatorLauncher
                     string biosPath = AppConfig.GetFullPath("bios");
                     if (!string.IsNullOrEmpty(biosPath))
                     {
+                        biosPath = Path.Combine(biosPath, "pcsx2", "bios");
+
                         ini.WriteValue("Folders", "UseDefaultBios", "disabled");
                         ini.WriteValue("Folders", "Bios", biosPath.Replace("\\", "\\\\"));
                     }
@@ -140,6 +142,19 @@ namespace emulatorLauncher
                         ini.WriteValue("Folders", "UseDefaultMemoryCards", "disabled");
                         ini.WriteValue("Folders", "Savestates", savesPath.Replace("\\", "\\\\"));
                         ini.WriteValue("Folders", "MemoryCards", savesPath.Replace("\\", "\\\\"));
+                    }
+
+                    string screenShotsPath = AppConfig.GetFullPath("screenshots");
+                    if (!string.IsNullOrEmpty(screenShotsPath))
+                    {
+                        screenShotsPath = Path.Combine(screenShotsPath, Path.GetFileName(_path));
+
+                        if (!Directory.Exists(screenShotsPath))
+                            try { Directory.CreateDirectory(screenShotsPath); }
+                            catch { }
+
+                        ini.WriteValue("Folders", "UseDefaultSnapshots", "disabled");
+                        ini.WriteValue("Folders", "Snapshots", screenShotsPath.Replace("\\", "\\\\"));
                     }
 
                     if (SystemConfig.isOptSet("ratio") && !string.IsNullOrEmpty(SystemConfig["ratio"]))
