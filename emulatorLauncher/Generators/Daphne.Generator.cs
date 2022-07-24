@@ -35,10 +35,18 @@ namespace emulatorLauncher
             }
 
             // hypseus
-            if (SystemConfig["ratio"] == "16/9")
-                commandArray.Add("-ignore_aspect_ratio");
-            else
-                commandArray.Add("-force_aspect_ratio");
+            if (_executableName == "hypseus")
+            {
+                if (SystemConfig["ratio"] == "16/9")
+                    commandArray.Add("-ignore_aspect_ratio");
+                else
+                    commandArray.Add("-force_aspect_ratio");
+
+                if (SystemConfig.isOptSet("hypseus_scanlines") && SystemConfig["hypseus_scanlines"] == "scanlines")
+                    commandArray.Add("-scanlines");
+
+                return;
+            }
         }
 
         protected string _executableName;
