@@ -125,6 +125,7 @@
     <Compile Include="Generators\mGBA.Generator.cs" />
     <Compile Include="Generators\Mednafen.Generator.cs" />
     <Compile Include="Generators\Redream.Generator.cs" />
+	<Compile Include="Generators\NosGba.Generator.cs" />
     <Compile Include="Generators\Raine.Generator.cs" />
     <Compile Include="Generators\Cxbx.Generator.cs" />
     <Compile Include="Generators\SimCoupe.Generator.cs" />
