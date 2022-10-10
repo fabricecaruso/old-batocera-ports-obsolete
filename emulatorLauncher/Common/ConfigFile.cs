@@ -63,6 +63,9 @@ namespace emulatorLauncher
         {
             var ret = new ConfigFile();
             ret.Options = options;
+
+            SimpleLogger.Instance.Info("Reading Config File: " + file);
+
             if (!File.Exists(file))
                 return ret;
 
