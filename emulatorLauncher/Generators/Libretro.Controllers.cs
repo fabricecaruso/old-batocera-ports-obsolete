@@ -28,10 +28,10 @@ namespace emulatorLauncher.libRetro
 
             CleanControllerConfig(retroconfig);
 
+            WriteHotKeyConfig(retroconfig);
+
             foreach (var controller in Program.Controllers)
                 WriteControllerConfig(retroconfig, controller, system);
-
-            WriteHotKeyConfig(retroconfig);
 
             return true;
         }
@@ -149,6 +149,16 @@ namespace emulatorLauncher.libRetro
                 config[string.Format("input_enable_hotkey_{0}", typetoname[hotKey.Type])] = GetConfigValue(hotKey);            
         }
 
+        private static bool hasHotKey()
+        {
+            var c0 = Program.Controllers.FirstOrDefault(c => c.PlayerIndex == 1);
+            if (c0 == null || c0.Config == null)
+                return false;
+
+            var hotKey = GetInputCode(c0, Tools.InputKey.hotkey);
+            return (hotKey != null && hotKey.Type != "key");
+        }
+
         private static string GetAnalogMode(Controller controller, string system)
         {
             if (disabledAnalogModeSystems.Contains(system))
@@ -166,6 +176,10 @@ namespace emulatorLauncher.libRetro
 
         private static Dictionary<string, string> GenerateControllerConfig(ConfigFile retroconfig, Controller controller, string system)
         {
+            var conflicts = new List<string>();
+
+            var config = new Dictionary<string, string>();
+
             Dictionary<InputKey, string> retroarchbtns = new Dictionary<InputKey, string>()
             {
                 { InputKey.b, "a" },
@@ -235,9 +249,31 @@ namespace emulatorLauncher.libRetro
                 }
             }
 
-            var conflicts = new List<string>();
+            if (system == "zxspectrum" || system == "amstradcpc" || system == "amiga500" || system == "amiga1200")
+            {
+                foreach (var specialkey in retroarchspecials)
+                {
+                    retroconfig.DisableAll("input_" + specialkey.Value);
+                    config["input_" + specialkey.Value] = "nul";
+                }
 
-            var config = new Dictionary<string, string>();
+#if DEBUG
+                config["input_exit_emulator"] = "tilde";
+#else
+                config["input_exit_emulator"] = "escape";
+#endif            
+                config["input_menu_toggle"] = "f1";
+                config["input_rewind"] = "f12";
+
+                if (system == "zxspectrum")
+                {
+                    retroarchbtns[InputKey.a] = "a";
+                    retroarchbtns[InputKey.b] = "r";
+                    config["input_libretro_device_p1"] = "513";
+                    config["input_libretro_device_p2"] = "0";
+                    config["input_libretro_device_p3"] = "259";
+                }
+            }
 
             foreach (var btnkey in retroarchbtns)
             {
@@ -285,7 +321,7 @@ namespace emulatorLauncher.libRetro
                 }
             }
 
-            if (controller.PlayerIndex == 1)
+            if (controller.PlayerIndex == 1 && hasHotKey())
             {
                 foreach (var specialkey in retroarchspecials)
                 {
