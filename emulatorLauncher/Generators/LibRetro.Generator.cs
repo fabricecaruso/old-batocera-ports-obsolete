@@ -276,9 +276,6 @@ namespace emulatorLauncher.libRetro
             if (Controllers.Count > 2 && (core == "snes9x_next" || core == "snes9x"))
                 retroarchConfig["input_libretro_device_p2"] = "257";
 
-            retroarchConfig["input_libretro_device_p1"] = "513";
-            retroarchConfig["input_libretro_device_p3"] = "259";
-
             if (core == "mednafen_psx" || core == "pcsx_rearmed" || core == "duckstation")
             {
                 if (SystemConfig.isOptSet("psxcontroller1"))
