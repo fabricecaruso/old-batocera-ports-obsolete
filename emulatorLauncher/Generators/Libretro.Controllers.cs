@@ -182,8 +182,8 @@ namespace emulatorLauncher.libRetro
 
             Dictionary<InputKey, string> retroarchbtns = new Dictionary<InputKey, string>()
             {
-                { InputKey.b, "a" },
-                { InputKey.a, "b" }, // A et B inversés par rapport à batocera
+                { InputKey.b, "b" },
+                { InputKey.a, "a" }, // A et B inversés par rapport à batocera
                 { InputKey.x, "x" }, 
                 { InputKey.y, "y" },
                 { InputKey.pageup, "l" },
